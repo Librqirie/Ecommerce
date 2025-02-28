@@ -1,0 +1,44 @@
+[
+    {
+      "_id": "64f0e1a5a1b2c3d4e5f6a7b8",
+      "username": "superAdmin",
+      "email": "superadmin@example.com",
+      "password": "password",
+      "role": "Super Administrateur"
+    },
+    {
+      "_id": "64f0e1a5a1b2c3d4e5f6a7b9",
+      "username": "adminUser",
+      "email": "admin@example.com",
+      "password": "password",
+      "role": "Administrateur"
+    },
+    {
+      "_id": "64f0e1a5a1b2c3d4e5f6a7c0",
+      "username": "clientUser",
+      "email": "client@example.com",
+      "password": "password",
+      "role": "Client"
+    },
+    {
+      "_id": "64f0e1a5a1b2c3d4e5f6a7c1",
+      "username": "vendorUser",
+      "email": "vendor@example.com",
+      "password": "password",
+      "role": "Vendeur"
+    },
+    {
+      "_id": "64f0e1a5a1b2c3d4e5f6a7c2",
+      "username": "orderManager",
+      "email": "ordermanager@example.com",
+      "password": "password",
+      "role": "Gestionnaire de Commandes"
+    },
+    {
+      "_id": "64f0e1a5a1b2c3d4e5f6a7c3",
+      "username": "marketingAnalyst",
+      "email": "marketing@example.com",
+      "password": "password",
+      "role": "Analyste Marketing"
+    }
+  ]  
