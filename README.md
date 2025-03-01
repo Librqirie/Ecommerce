@@ -195,7 +195,7 @@ Pour obtenir un token JWT nécessaire pour les routes protégées:
 Créer un utilisateur :
 
 POST http://localhost:3000/auth/register
-Body:
+**Body**:
 
 ```json
 {
@@ -208,7 +208,7 @@ Body:
 Se connecter pour obtenir un token :
 
 POST http://localhost:3000/auth/login
-Body:
+**Body**:
 ```json
 {
   "email": "admin@example.com",
@@ -221,7 +221,7 @@ La réponse inclura un token JWT que vous pourrez utiliser pour les routes prot�
 Tester la vérification des droits :
 
 POST http://localhost:3000/demo/check-access
-Body:
+**Body**:
 ```json
 {
   "userRole": "Super Administrateur",
@@ -234,7 +234,7 @@ La réponse devrait confirmer que ce rôle a le droit d'effectuer cette action
 Tester avec un rôle différent :
 
 POST http://localhost:3000/demo/check-access
-Body:
+**Body**:
 ```json
 {
   "userRole": "Client",
@@ -278,4 +278,86 @@ La réponse devrait indiquer que ce rôle n'a pas le droit d'effectuer cette act
   ├── package.json             # Dépendances du projet
   ├── package-lock.json
   └── README.md                # Documentation du projet
+```
+
+
+## 👥 User Story : Parcours d'un vendeur avec droits limités
+
+Cet exemple présente un scénario complet d'utilisation de l'API par un vendeur, incluant à la fois les actions autorisées et non autorisées.
+
+### Scénario
+
+**Utilisateur**: Sophie, une vendeuse de meubles design sur la plateforme
+
+**Objectif**: Se connecter, mettre à jour un produit dont le prix a augmenté, puis tenter d'accéder à une fonctionnalité réservée aux administrateurs
+
+### Enchaînement des requêtes
+
+1. Création du compte vendeur
+
+POST http://localhost:3000/auth/register
+**Body**:
+```json
+{
+  "username": "sophie_design",
+  "email": "sophie@design-home.com",
+  "password": "meuble2024",
+  "role": "Vendeur"
+}
+```
+
+2. Connexion du vendeur
+
+POST http://localhost:3000/auth/login
+**Body**:
+```json
+{
+  "email": "sophie@design-home.com",
+  "password": "meuble2024"
+}
+```
+
+3. Récupération de ses produits
+
+GET http://localhost:3000/products?seller=66f12a3b4c5d6e7f89012345
+**Headers**:
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
+4. Vérification des droits pour mettre à jour un produit
+
+POST http://localhost:3000/demo/check-access
+**Body**:
+```json
+{
+  "userRole": "Vendeur",
+  "actionType": "updateProduct"
+}
+```
+
+5. Mise à jour du prix du produit
+
+PUT http://localhost:3000/products/66f12b3c4d5e6f7890123456
+**Headers**:
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
+**Body**:
+```json
+{
+  "price": 349.99,
+  "description": "Table basse en chêne massif premium, style scandinave moderne"
+}
+```
+
+6. Tentative d'action non autorisée : Supprimer un utilisateur
+
+DELETE http://localhost:3000/users/66e21d4f5g6h7i8j9k012345
+**Headers**:
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
+Réponse attendue:
+
+```json
+{
+  "message": "Accès refusé: votre rôle \"Vendeur\" n'a pas les droits nécessaires pour cette action"
+}
 ```
