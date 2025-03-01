@@ -26,7 +26,7 @@ cd Ecommerce
 Installez les dépendances du projet en exécutant la commande suivante :
 
 ```bash
-npm install express mongoose dotenv
+npm install express mongoose dotenv jsonwebtoken
 ```
 
 Et si npm et node n'ont pas de version vous pouvez utiliser la commande :
@@ -168,6 +168,82 @@ curl -X GET http://localhost:3000/
         -d '{"price": 200, "stock": 15}'
     ```
 
+## 🔒 Système d'Authentification et Gestion des Droits
+
+Le projet comprend un système de vérification des droits d'accès basé sur les rôles utilisateur:
+
+### Rôles disponibles
+- Super Administrateur
+- Administrateur
+- Vendeur
+- Client
+- Gestionnaire de Commandes
+- Analyste Marketing
+
+### Tester la vérification des droits d'accès
+
+Nous avons intégré une route de démonstration pour tester si un rôle spécifique a le droit d'effectuer une action:
+
+**Avec Postman:**
+
+1. Sélectionnez la méthode POST
+2. Utilisez l'URL:
+
+Authentification avec JWT
+Pour obtenir un token JWT nécessaire pour les routes protégées:
+
+Créer un utilisateur :
+
+POST http://localhost:3000/auth/register
+Body:
+
+```json
+{
+  "username": "admin",
+  "email": "admin@example.com",
+  "password": "password123",
+  "role": "Super Administrateur"
+}
+```
+Se connecter pour obtenir un token :
+
+POST http://localhost:3000/auth/login
+Body:
+```json
+{
+  "email": "admin@example.com",
+  "password": "password123"
+}
+```
+La réponse inclura un token JWT que vous pourrez utiliser pour les routes protégées
+
+
+Tester la vérification des droits :
+
+POST http://localhost:3000/demo/check-access
+Body:
+```json
+{
+  "userRole": "Super Administrateur",
+  "actionType": "deleteProduct"
+}
+```
+La réponse devrait confirmer que ce rôle a le droit d'effectuer cette action
+
+
+Tester avec un rôle différent :
+
+POST http://localhost:3000/demo/check-access
+Body:
+```json
+{
+  "userRole": "Client",
+  "actionType": "deleteProduct"
+}
+```
+La réponse devrait indiquer que ce rôle n'a pas le droit d'effectuer cette action
+
+
 ## 📂 Structure du projet
 
 ```
@@ -192,9 +268,13 @@ curl -X GET http://localhost:3000/
   │     ├── products.js
   │     ├── orders.js
   │     ├── reviews.js
-  │     └── logs.js
+  │     ├── logs.js
+  │     └── auth.js            # Routes d'authentification
+  ├── utils/                   # Utilitaires
+  │     ├── jwtAuth.js         # Fonctions pour JWT
+  │     └── checkAccess.js     # Vérification des permissions
   ├── server.js                # Serveur principal Express
-  ├── .env                     # Variables d’environnement
+  ├── .env                     # Variables d'environnement (JWT_SECRET)
   ├── package.json             # Dépendances du projet
   ├── package-lock.json
   └── README.md                # Documentation du projet
